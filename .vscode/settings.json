@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "iosfwd": "cpp",
+        "iostream": "cpp",
+        "cstdio": "cpp",
+        "xstring": "cpp",
+        "string": "cpp",
+        "xhash": "cpp"
+    }
+}
