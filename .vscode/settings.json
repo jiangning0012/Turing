@@ -5,6 +5,7 @@
         "cstdio": "cpp",
         "xstring": "cpp",
         "string": "cpp",
-        "xhash": "cpp"
+        "xhash": "cpp",
+        "vector": "cpp"
     }
 }
