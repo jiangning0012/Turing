@@ -25,6 +25,21 @@ public:
     void _print(){
         cout<<cur_state<<" "<<head<<" "<<new_char<<" "<<direction<<" "<<next_state<<endl;
     }
+    string get_cur_state(){
+        return cur_state;
+    }
+    string get_head(){
+        return head;
+    }
+    string get_new_char(){
+        return new_char;
+    }
+    string get_direction(){
+        return direction;
+    }
+    string get_next_state(){
+        return next_state;
+    }
 };
 
 class TM{
@@ -162,9 +177,11 @@ TM TM_parser(vector<string> content,bool verbose_flag){
         if (content[i].size()==0) continue;
         //notes line
         if (content[i][0]==';') continue;
+        //垂直制表符
+        if (content[i][0]==13) continue;
         int end_pos;
         for (int j=content[i].size()-1;j>=0;j--) 
-            if (content[i][j]!=' '){end_pos=j;break;}
+            if (content[i][j]!=' '&&content[i][j]!=13){end_pos=j;break;}
         temp=content[i];
         content[i]="";
         for (int j=0;j<=end_pos;j++){
@@ -290,14 +307,89 @@ TM TM_parser(vector<string> content,bool verbose_flag){
         }
     }
     //q0和F是否在状态集Q中
-    
+    int q0_flag=0;
+    for (int i=0;i<Q.size();i++){
+        if (Q[i]==q0){q0_flag=1;break;}
+    }
+    if (!q0_flag){
+        cerr<<"syntax error\n";
+        exit(-1);
+    }
+    for (int i=0;i<F.size();i++){
+        int F_flag=0;
+        for (int j=0;j<Q.size();j++){
+            if (F[i]==Q[j]){F_flag=1;break;}
+        }
+        if (!F_flag){
+            cerr<<"syntax error\n";
+            exit(-1);
+        }
+    }
     //纸带数大于0
     if (N<=0){
         cerr<<"syntax error\n";
         exit(-1);
     }
     //转移函数语法错误
-
+    for (int i=0;i<trans_funcs.size();i++){
+        string cur_state=trans_funcs[i].get_cur_state();
+        string head=trans_funcs[i].get_head();
+        string new_char=trans_funcs[i].get_new_char();
+        string direction=trans_funcs[i].get_direction();
+        string next_state=trans_funcs[i].get_next_state();
+        if (!(head.size()==new_char.size()&&new_char.size()==direction.size()&&direction.size()==N)){
+            cerr<<"syntax error\n";
+            exit(-1);
+        }
+        for (int j=0;j<head.size();j++){
+            int head_flag=0;
+            for (int k=0;k<G.size();k++){
+                if (head[j]==G[k]){head_flag=1;break;}
+            }
+            if (!head_flag){
+                cerr<<"syntax error\n";
+                exit(-1);
+            }
+        }
+        for (int j=0;j<new_char.size();j++){
+            int new_char_flag=0;
+            for (int k=0;k<G.size();k++){
+                if (new_char[j]==G[k]){new_char_flag=1;break;}
+            }
+            if (!new_char_flag){
+                cerr<<"syntax error\n";
+                exit(-1);
+            }
+        }
+        for (int j=0;j<direction.size();j++){
+            if (!(direction[j]=='l'||direction[j]=='r'||direction[j]=='*')){
+                cerr<<"syntax error\n";
+                exit(-1);
+            }
+        }
+        int cur_state_flag=0;
+        for (int k=0;k<Q.size();k++){
+            if (cur_state==Q[k]){
+                cur_state_flag=1;
+                break;
+            } 
+        }
+        if (!cur_state_flag){
+            cerr<<"syntax error\n";
+            exit(-1);
+        }
+        int next_state_flag=0;
+        for (int k=0;k<Q.size();k++){
+            if (next_state==Q[k]){
+                next_state_flag=1;
+                break;
+            }
+        }
+        if (!next_state_flag){
+            cerr<<"syntax error\n";
+            exit(-1);
+        }
+    }
     TM turing_machine=TM(Q,S,G,q0,B,F,N,trans_funcs,verbose_flag);
     return turing_machine;
 }
