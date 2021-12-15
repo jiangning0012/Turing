@@ -149,9 +149,72 @@ int TM::solve(string input){
             exit(-1);
         }
     }
-    if (!verbose_flag){}
-    else{}
-    return 0;
+    if (verbose_flag){
+        cout<<"Input: "<<input<<endl;
+        cerr<<"==================== RUN ====================\n";
+    }
+    int step=0;
+    cur_state=q0;
+    for (int i=0;i<N;i++){
+        string temp_tape;
+        temp_tape.push_back(B);
+        tapes.push_back(temp_tape);
+        head_pos.push_back(0);
+        leftmost_tag.push_back(0);
+    }
+    if (input.size()==0) input="_";
+    tapes[0]=input;
+    if (verbose_flag) verbose(step);
+    while (true){
+        step++;
+        int trans_func_pos=-1;
+        for (int i=0;i<trans_funcs.size();i++){
+            int head_match=1;
+            for (int j=0;j<tapes.size();j++){
+                if (tapes[j][head_pos[j]]!=trans_funcs[i].get_head()[j]){
+                    head_match=0;
+                }
+            }
+            if (cur_state==trans_funcs[i].get_cur_state()&&head_match){
+                trans_func_pos=i;
+                break;
+            }
+        }
+        if (trans_func_pos==-1) break;
+        for (int j=0;j<tapes.size();j++){
+            tapes[j][head_pos[j]]=trans_funcs[trans_func_pos].get_new_char()[j];
+        }
+        for (int i=0;i<head_pos.size();i++){
+            if (trans_funcs[trans_func_pos].get_direction()[i]=='r'){
+                head_pos[i]++;
+                if (head_pos[i]>=tapes[i].size()){
+                    tapes[i].push_back(B);
+                }
+            }
+            if (trans_funcs[trans_func_pos].get_direction()[i]=='l'){
+                head_pos[i]--;
+                if (head_pos[i]<0){
+                    tapes[i].insert(0,1,B);
+                    head_pos[i]=0;
+                    leftmost_tag[i]--;
+                }
+            }
+        }
+        cur_state=trans_funcs[trans_func_pos].get_next_state();
+        if (verbose_flag){
+            verbose(step);
+        }
+        for (int i=0;i<F.size();i++){
+            if (cur_state==F[i]) break;
+        }
+        
+    }
+    if (verbose_flag){
+        cout<<"Result: "<<tapes[0]<<endl;
+        cout<<"==================== END ====================\n";
+    }
+    else cout<<tapes[0]<<endl;
+    return 1;
 }
 
 //去掉花括号
