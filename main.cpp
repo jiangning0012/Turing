@@ -88,7 +88,7 @@ public:
             for (int j=0;j<S.size();j++)
                 if (raw_input[i]==S[j]) {flag=1;break;}
             if (!flag){
-                cerr<<"Illegal input\n";
+                //cerr<<"Illegal input\n";
                 return i;
             }
         }
@@ -127,8 +127,32 @@ public:
         cout<<"State  : "<<cur_state<<endl;
         cout<<"---------------------------------------------"<<endl;
     }
-    
+    int solve(string input);
 };
+
+int TM::solve(string input){
+    int check=check_input(input);
+    if (check!=-1){
+        if (!verbose_flag){
+            cerr<<"illegal input\n";
+            exit(-1);
+        }
+        else {
+            cerr<<"Input: "<<input<<endl;
+            cerr<<"==================== ERR ====================\n";
+            cerr<<"error: '"<<input[check]<<"'was not declared in the set of input symbols\n";
+            cerr<<"Input: "<<input<<endl;
+            cerr<<"       ";
+            for (int i=0;i<check;i++) cerr<<" ";
+            cerr<<"^"<<endl;
+            exit(-1);
+        }
+    }
+    if (!verbose_flag){}
+    else{}
+    return 0;
+}
+
 //去掉花括号
 string deal_brackets(string str){
     int left=-1,right=-1;
@@ -413,10 +437,10 @@ TM get_TM(string raw_tm,bool verbose_flag){
 int TM_solve(string raw_tm,string raw_input,bool flag){
     //flag:verbose or not
     TM solver=get_TM(raw_tm,flag);
-    //int res=solver.solve(raw_input);
-    //return res;
-    solver.print_info();
-    return 0;
+    int res=solver.solve(raw_input);
+    return res;
+    //solver.print_info();
+    //return 0;
 }
 
 int command_check_error(vector<string> result){
