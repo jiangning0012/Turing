@@ -145,6 +145,7 @@ int TM::solve(string input){
             cerr<<"       ";
             for (int i=0;i<check;i++) cerr<<" ";
             cerr<<"^"<<endl;
+            cerr<<"==================== END ====================\n";
             exit(-1);
         }
     }
