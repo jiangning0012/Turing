@@ -101,6 +101,7 @@ public:
             vector<int> _space;
             for (int j=0;j<tapes[i].size();j++){
                 int pos=leftmost_tag[i]+j;
+                if (pos<0) pos=-1*pos;
                 if (pos<10){
                     _space.push_back(1);
                 }
@@ -127,8 +128,29 @@ public:
         cout<<"State  : "<<cur_state<<endl;
         cout<<"---------------------------------------------"<<endl;
     }
+    void delete_blank();
     int solve(string input);
 };
+
+void TM::delete_blank(){
+    for (int i=0;i<N;i++){
+        for (int j=0;j<head_pos[i];j++){
+            if (tapes[i][j]==B&&tapes[i].size()>1){
+                tapes[i].erase(0,1);
+                head_pos[i]--;
+                leftmost_tag[i]++;
+            }
+            else break;
+        }
+        for (int j=tapes[i].size()-1;j>head_pos[i];j--){
+            if (tapes[i][j]==B&&tapes[i].size()>1){
+                tapes[i].pop_back();
+                j--;
+            }
+            else break;
+        }
+    }
+}
 
 int TM::solve(string input){
     int check=check_input(input);
@@ -201,13 +223,13 @@ int TM::solve(string input){
             }
         }
         cur_state=trans_funcs[trans_func_pos].get_next_state();
+        delete_blank();
         if (verbose_flag){
             verbose(step);
         }
         for (int i=0;i<F.size();i++){
             if (cur_state==F[i]) break;
         }
-        
     }
     if (verbose_flag){
         cout<<"Result: "<<tapes[0]<<endl;
