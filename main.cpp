@@ -231,7 +231,15 @@ int TM::solve(string input){
             if (cur_state==F[i]) break;
         }
     }
+    for (int j=tapes[0].size()-1;j>=0;j--){
+        if (tapes[0][j]==B&&tapes[0].size()>1){
+            tapes[0].pop_back();
+            j--;
+        }
+        else break;
+    }
     if (verbose_flag){
+
         cout<<"Result: "<<tapes[0]<<endl;
         cout<<"==================== END ====================\n";
     }
