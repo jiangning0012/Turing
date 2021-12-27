@@ -23,21 +23,21 @@ one1 0_ _0 rr one2
 one2 1_ 11 rr one2
 one2 __ __ ** two1
 
-;step2
-two1 __ __ *l two2
-two2 _1 _Y *l two3
+;step2 a mod b
+two1 __ __ *l two2  ;向左移一位，找到b的最后一个1
+two2 _1 _Y *l two3  ;标记为Y并移动到0
 two3 _1 _1 *l two3
-two3 _0 _0 *l two4
-two4 _0 _0 *l two4
+two3 _0 _0 *l two4  ;当前在0
+two4 _0 _0 *l two4  ;向左移并找到a的最后一个1或B
 two4 _X _X *l two4
 
-;two4 __ ;a<b X变1 0,1,Y变B
+;two4 __ ;找到B,a<b X变1 0,1,Y变B
 
-two4 _1 _X *r two5
+two4 _1 _X *r two5  ;若为1则标记这个为X
 two5 _0 _0 *r two5
 two5 _1 _1 *r two5
-two5 _X _X *r two5
-two5 _Y _Y *l two6
+two5 _X _X *r two5  ;向右直到Y
+two5 _Y _Y *l two6  ;向左看一眼
 two6 _1 _1 ** two2
 two6 _0 _0 *l two7  ;b<a 此时要把纸带上的X变成0 Y变成1
 two7 _0 _0 *l two7
